@@ -82,7 +82,7 @@ int main(int argc,char* argv[]){
 			}*/
 			//index++;
 		}
-		buffer[index+1] = '\0';
+		buffer[index] = '\0';
 		printf("\e[1;1H\e[2J");
 		printf("%s", buffer);
 	}
