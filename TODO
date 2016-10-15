@@ -1,1 +1,2 @@
 Add arrow key support by using fseek for file writing and arrow key esc sequences for terminal.
+Add more code clarity.
