@@ -1,2 +1,1 @@
 Add arrow key support by using fseek for file writing and arrow key esc sequences for terminal.
-VERY IMPORTANT: Memory allocation for buffer DOES NOT WORK, make new one.
