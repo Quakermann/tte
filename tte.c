@@ -60,7 +60,7 @@ char getch(){
 }
 
 int main(int argc,char* argv[]){
-	const int bufsize = 8;
+	const int bufsize = 128;
 	int cursize = 0;
 	int curchar;
 	int incchar;
