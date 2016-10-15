@@ -15,13 +15,6 @@ You should have received a copy of the GNU General Public License
 along with tte.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
-
-
-
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -30,25 +23,25 @@ along with tte.  If not, see <http://www.gnu.org/licenses/>.
 #include <string.h>
 #include <termios.h>
 
-static struct termios old, new;		//All this is just code ripped from ncurses.
+static struct termios old, new;
 
-void initTermios(int echo){
-	tcgetattr(0, &old); /* grab old terminal i/o settings */
-	new = old; /* make new settings same as old settings */
-	new.c_lflag &= ~ICANON; /* disable buffered i/o */
-	new.c_lflag &= echo ? ECHO : ~ECHO; /* set echo mode */
-	tcsetattr(0, TCSANOW, &new); /* use these new terminal i/o settings now */
+void terminit(int echo){
+	tcgetattr(0, &old);		//Grab old attributes.
+	new = old;		//Make new attributes the same as the old.
+	new.c_lflag &= ~ICANON;		//Disabed buffed input/output.
+	new.c_lflag &= echo ? ECHO : ~ECHO;		//Set if echo.
+	tcsetattr(0, TCSANOW, &new);		//Use new terminal attibutes.
 }
 
-void resetTermios(void){
+void termrst(){
   tcsetattr(0, TCSANOW, &old);
 }
 
 char getch(){
 	char ch;
-	initTermios(0);
+	terminit(0);
 	ch = getchar();
-	resetTermios();
+	termrst();
 	return ch;
 }
 
