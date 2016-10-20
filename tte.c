@@ -45,14 +45,26 @@ char getch(){
 	return ch;
 }
 
+void appch(char* str, char ch){
+	str[strlen(str)] = ch;
+	str[strlen(str)+1] = '\0';
+	putchar(ch);
+}
+
+void rmch(char* str){
+	str[strlen(str)-1] = '\0';
+}
+
+
 int main(int argc,char* argv[]){
 	const int bufsize = 128;
 	int cursize = 0;
-	int curchar;
-	int incchar;
+	int curch;
+	int incch;
 	int index = 0;
 	int line = 0;
 	int linec = 0;
+	int i;
 	char* buffer = malloc(bufsize);
 	char escseq[3];
 
@@ -67,8 +79,8 @@ int main(int argc,char* argv[]){
 
 	pfile = fopen(argv[1], "r+");		//If file exists, get contents.
 	if(pfile != NULL){		
-		while( (incchar = fgetc(pfile)) != EOF){	
-			buffer[index++] = (char)incchar;	
+		while( (incch = fgetc(pfile)) != EOF){	
+			buffer[index++] = (char)incch;	
 			if(index == cursize){    
 				cursize = index + bufsize;	 
 				buffer = realloc(buffer, cursize);	 
@@ -92,9 +104,8 @@ int main(int argc,char* argv[]){
 	}
 
 	while(1){
-		switch(curchar = getch()){
+		switch(curch = getch()){
 			case 27:
-				//printf("\n\n[%s]", buffer);	//--------------------------------------------
 				printf("\n[Wrote %zu bytes]\n", strlen(buffer));
 				freopen(argv[1], "w", pfile);
 				fprintf(pfile, "%s", buffer);
@@ -104,11 +115,9 @@ int main(int argc,char* argv[]){
 				exit(1);
 			case 9:
 				for(int i=0; i <= 4; i++){
-					buffer[strlen(buffer)] = ' ';
-					putchar(' ');
+					appch(buffer, ' ');
 					linec++;
 				}
-				buffer[strlen(buffer)+1] = '\0';
 			case 127:
 				printf("\b \b");
 				if(buffer[strlen(buffer)-1] == '\n'){
@@ -119,16 +128,14 @@ int main(int argc,char* argv[]){
 					}
 				}
 				else{
-					buffer[strlen(buffer)-1] = '\0';
+					rmch(buffer);
 					linec--;
 				}
 			default:
-				if(curchar == 127 || curchar == 9 || curchar == '\0'){
+				if(curch == 127 || curch == 9 || curch == '\0'){
 					break;
 				}
-				buffer[strlen(buffer)] = curchar;
-				buffer[strlen(buffer)+1] = '\0';
-				putchar(curchar);
+				appch(buffer, curch);
 				linec++;	
 		}
 	}
