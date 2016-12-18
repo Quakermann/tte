@@ -45,26 +45,14 @@ char getch(){
 	return ch;
 }
 
-void appch(char* str, char ch){
-	str[strlen(str)] = ch;
-	str[strlen(str)+1] = '\0';
-	putchar(ch);
-}
-
-void rmch(char* str){
-	str[strlen(str)-1] = '\0';
-}
-
-
 int main(int argc,char* argv[]){
 	const int bufsize = 128;
 	int cursize = 0;
-	int curch;
-	int incch;
+	int curchar;
+	int incchar;
 	int index = 0;
 	int line = 0;
 	int linec = 0;
-	int i;
 	char* buffer = malloc(bufsize);
 	char escseq[3];
 
@@ -77,10 +65,10 @@ int main(int argc,char* argv[]){
 		exit(1);
 	}
 
-	pfile = fopen(argv[1], "r+");		//If file exists, get contents.
-	if(pfile != NULL){		
-		while( (incch = fgetc(pfile)) != EOF){	
-			buffer[index++] = (char)incch;	
+	pfile = fopen(argv[1], "r+");
+	if(pfile != NULL){			//If file exists, get contents.
+		while( (incchar = fgetc(pfile)) != EOF){	
+			buffer[index++] = (char)incchar;	
 			if(index == cursize){    
 				cursize = index + bufsize;	 
 				buffer = realloc(buffer, cursize);	 
@@ -98,13 +86,13 @@ int main(int argc,char* argv[]){
 		printf("\e[1;1H\e[2J");
 		printf("%s", buffer);
 	}
-	else{
+	else{		//Else, just create a new file.
 		pfile = fopen(argv[1], "w+");
-		printf("\e[1;1H\e[2J");		//Else, just create a new file.
+		printf("\e[1;1H\e[2J");
 	}
 
 	while(1){
-		switch(curch = getch()){
+		switch(curchar = getch()){
 			case 27:
 				printf("\n[Wrote %zu bytes]\n", strlen(buffer));
 				freopen(argv[1], "w", pfile);
@@ -115,9 +103,11 @@ int main(int argc,char* argv[]){
 				exit(1);
 			case 9:
 				for(int i=0; i <= 4; i++){
-					appch(buffer, ' ');
+					buffer[strlen(buffer)] = ' ';
+					putchar(' ');
 					linec++;
 				}
+				buffer[strlen(buffer)+1] = '\0';
 			case 127:
 				printf("\b \b");
 				if(buffer[strlen(buffer)-1] == '\n'){
@@ -128,14 +118,16 @@ int main(int argc,char* argv[]){
 					}
 				}
 				else{
-					rmch(buffer);
+					buffer[strlen(buffer)-1] = '\0';
 					linec--;
 				}
 			default:
-				if(curch == 127 || curch == 9 || curch == '\0'){
+				if(curchar == 127 || curchar == 9 || curchar == '\0'){
 					break;
 				}
-				appch(buffer, curch);
+				buffer[strlen(buffer)] = curchar;
+				buffer[strlen(buffer)+1] = '\0';
+				putchar(curchar);
 				linec++;	
 		}
 	}
