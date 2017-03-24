@@ -1,4 +1,4 @@
 Add arrow key support by using fseek for file writing and arrow key esc sequences for terminal.
 Add more code clarity.
 Add in cursor move to previous line during newline character removal.
-TRUMP 2016
+TRUMP 2016 -completed :^)
